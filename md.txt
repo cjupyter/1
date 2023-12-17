@@ -1,0 +1,46 @@
+import hashlib
+str=input("Enter string to create hash value")
+res=hashlib.md5(str.encode('UTF-8'))
+print("The hexadecimal equivalent of hash is :", res.hexdigest())
+
+str2=input("Enter 2nd string")
+
+res2=hashlib.md5(str2.encode('UTF-8'))
+print("Hexa of second value is ",res2.hexdigest())
+
+
+import hashlib
+
+def md5():
+    with open(r"C:\Users\gaura\OneDrive\Desktop\isn prac.txt",'rb') as fh:
+        while True:
+            data=fh.read(1024)
+            if not data:
+                break
+            m=hashlib.md5(data)
+    print("Hex value is :",m.hexdigest())
+
+md5()
+
+
+import hashlib
+import hmac
+import base64
+def make_digest(message,key):
+    key=bytes(key,'UTF-8')
+    message=bytes(message,'UTF-8')
+    digester=hmac.new(key,message,hashlib.sha1)
+    signature1=digester.hexdigest()
+    print(signature1)
+
+make_digest("abc","3")
+
+
+
+
+
+
+
+
+
+
