@@ -1,0 +1,219 @@
+#1RSA
+import random
+def gcd(a,b):
+    while b!=0:
+        a,b=b,a%b
+    return a
+
+def multiplicative_inverse(e,phi):
+    for i in range(1,phi):
+        if(phi*i+1)%e==0:
+            return(phi*i+1)//e
+    raise ValueError('No modular inverse')
+def is_prime(x):
+    if x>1:
+        for i in range(2,x+1):
+            if x%i==0 and i!=x and i!=1:
+                return False
+        else:
+            return True
+    else:
+        return False
+def generate_keypair(p,q):
+    if not (is_prime(p) and is_prime(q)):
+        raise ValueError("both numbers must be prime")
+    elif p==q:
+        raise ValueError("p and q connot be equal")
+    n=p*q
+    phi=(p-1)*(q-1)
+    print('phi',phi)
+    e=random.randint(2,(phi-1))
+    g=gcd(e,phi)
+    while g!=1:
+        e=random.randint(2,(phi-1))
+        g=gcd(e,phi)
+    d=multiplicative_inverse(e,phi)
+    print("d=",d)
+    return ((e,n),(d,n))
+
+def encrypt(pk,plainText):
+    a=[]
+    key,n=pk
+    for char in plainText:
+        a.append(((ord(char)-65)%26))
+    cipher=[(s**key)%n for s in a]
+    return cipher
+
+def decrypt(pk,cipherText):
+    key,n=pk
+    for char in cipherText:
+        plain=[chr((((char**key)%n)+65))for char in cipherText]
+    return ''.join(plain)
+
+def main():
+    print("RSA Encrypt/Decrypt")
+    p=int(input("Enter a prime number(17,19,23,etc):"))
+    q=int(input("Enter another prime(not same):"))
+    print("generate your public/private keypair now..")
+    public,private=generate_keypair(p,q)
+    print("Your public key is ",public, " and private key is ",private)
+    message=input("Enter a message in Uppercase to encrypt with private key: ")
+    message=message.replace(",","")
+    message=message.upper()
+    encrypted_msg=encrypt(public,message)
+    print("your encrypted message is: ")
+    print(''.join(map(lambda x:str(x),encrypted_msg)))
+    print("decrypting message with public key", public,"....")
+    print("Your msg is: ")
+    print(decrypt(private,encrypted_msg))
+main()
+
+
+
+======================================================================================
+
+
+#2Diff
+import math
+import random
+
+global prime_value, root_value
+
+def is_prime(x):
+    if x > 1:
+        for i in range(2, int(math.sqrt(x)) + 1):
+            if x % i == 0:
+                return False
+        return True
+    else:
+        return False
+
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def prime():
+    n = random.randint(1, 100)
+    while not is_prime(n):
+        n = random.randint(1, 100)
+    return n
+
+def primitive_root(modulo):
+    roots = []
+    required_set = set(num for num in range(1, modulo) if gcd(num, modulo) == 1)
+    for g in range(1, modulo):
+        actual_set = set(pow(g, powers) % modulo for powers in range(1, modulo))
+        if required_set == actual_set:
+            roots.append(g)
+    return random.choice(roots)
+
+def secret_num(primitive_value):
+    secret = random.randint(1, primitive_value)
+    return secret
+
+print("A,B prime")
+prime_value = prime()
+print("Prime value is", prime_value)
+
+print("Alice and Bob agree on the primitive root to use: ")
+root_value = primitive_root(prime_value)
+print("The root is ", root_value, "\n")
+print("At this stage, Alice, Bob & Eve all know the prime and the root", "\n")
+
+alice_secret = secret_num(prime_value)
+print("Alice chooses a secret number ", alice_secret)
+bob_secret = secret_num(prime_value)
+print("Bob chooses a secret number: ", bob_secret, "\n")
+
+alice_public = pow(root_value, alice_secret, prime_value)
+print("Alice calculates her public key as A = root^aliceSecret mod prime")
+print("Alice's public key is ", alice_public, "\n")
+
+bob_public = pow(root_value, bob_secret, prime_value)
+print("Bob calculates his public key as B = root^bobSecret mod prime")
+print("Bob's public key is ", bob_public, "\n")
+
+alice_key = pow(bob_public, alice_secret, prime_value)
+bob_key = pow(alice_public, bob_secret, prime_value)
+
+print("Alice calculated the shared key as: ", alice_key)
+print("Bob calculated the shared key as: ", bob_key)
+
+
+
+
+==================================================================
+
+
+
+#3rf
+import math
+import random
+
+global prime_value, root_value
+
+def is_prime(x):
+    if x > 1:
+        for i in range(2, int(math.sqrt(x)) + 1):
+            if x % i == 0:
+                return False
+        return True
+    else:
+        return False
+
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def prime():
+    n = random.randint(1, 100)
+    while not is_prime(n):
+        n = random.randint(1, 100)
+    return n
+
+def primitive_root(modulo):
+    roots = []
+    required_set = set(num for num in range(1, modulo) if gcd(num, modulo) == 1)
+    for g in range(1, modulo):
+        actual_set = set(pow(g, powers) % modulo for powers in range(1, modulo))
+        if required_set == actual_set:
+            roots.append(g)
+    return random.choice(roots)
+
+def secret_num(primitive_value):
+    secret = random.randint(1, primitive_value)
+    return secret
+
+print("A,B prime")
+prime_value = prime()
+print("Prime value is", prime_value)
+
+print("Alice and Bob agree on the primitive root to use: ")
+root_value = primitive_root(prime_value)
+print("The root is ", root_value, "\n")
+print("At this stage, Alice, Bob & Eve all know the prime and the root", "\n")
+
+alice_secret = secret_num(prime_value)
+print("Alice chooses a secret number ", alice_secret)
+bob_secret = secret_num(prime_value)
+print("Bob chooses a secret number: ", bob_secret, "\n")
+
+alice_public = pow(root_value, alice_secret, prime_value)
+print("Alice calculates her public key as A = root^aliceSecret mod prime")
+print("Alice's public key is ", alice_public, "\n")
+
+bob_public = pow(root_value, bob_secret, prime_value)
+print("Bob calculates his public key as B = root^bobSecret mod prime")
+print("Bob's public key is ", bob_public, "\n")
+
+alice_key = pow(bob_public, alice_secret, prime_value)
+bob_key = pow(alice_public, bob_secret, prime_value)
+
+print("Alice calculated the shared key as: ", alice_key)
+print("Bob calculated the shared key as: ", bob_key)
+
+
+
+
