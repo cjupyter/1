@@ -1,0 +1,66 @@
+#2Diff
+import math
+import random
+
+global prime_value, root_value
+
+def is_prime(x):
+    if x > 1:
+        for i in range(2, int(math.sqrt(x)) + 1):
+            if x % i == 0:
+                return False
+        return True
+    else:
+        return False
+
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def prime():
+    n = random.randint(1, 100)
+    while not is_prime(n):
+        n = random.randint(1, 100)
+    return n
+
+def primitive_root(modulo):
+    roots = []
+    required_set = set(num for num in range(1, modulo) if gcd(num, modulo) == 1)
+    for g in range(1, modulo):
+        actual_set = set(pow(g, powers) % modulo for powers in range(1, modulo))
+        if required_set == actual_set:
+            roots.append(g)
+    return random.choice(roots)
+
+def secret_num(primitive_value):
+    secret = random.randint(1, primitive_value)
+    return secret
+
+print("A,B prime")
+prime_value = prime()
+print("Prime value is", prime_value)
+
+print("Alice and Bob agree on the primitive root to use: ")
+root_value = primitive_root(prime_value)
+print("The root is ", root_value, "\n")
+print("At this stage, Alice, Bob & Eve all know the prime and the root", "\n")
+
+alice_secret = secret_num(prime_value)
+print("Alice chooses a secret number ", alice_secret)
+bob_secret = secret_num(prime_value)
+print("Bob chooses a secret number: ", bob_secret, "\n")
+
+alice_public = pow(root_value, alice_secret, prime_value)
+print("Alice calculates her public key as A = root^aliceSecret mod prime")
+print("Alice's public key is ", alice_public, "\n")
+
+bob_public = pow(root_value, bob_secret, prime_value)
+print("Bob calculates his public key as B = root^bobSecret mod prime")
+print("Bob's public key is ", bob_public, "\n")
+
+alice_key = pow(bob_public, alice_secret, prime_value)
+bob_key = pow(alice_public, bob_secret, prime_value)
+
+print("Alice calculated the shared key as: ", alice_key)
+print("Bob calculated the shared key as: ", bob_key)
