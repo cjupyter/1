@@ -1,0 +1,22 @@
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+
+key =RSA.generate(2048)
+privkey=key.export_key()
+pubkey = key.publick_key().export_key()
+
+ogdoc = b"this is the original content"
+modifieddoc=b"this is the modified content"
+
+oghash=SHA256.new(ogdoc)
+mhash=SHA256.new(modifieddoc)
+
+sign = pkcs1_15.new(RSA.import_key(privkey)).sign(oghash)
+print(sign)
+
+try:
+    pkcs1_15.new(RSA.import_key(pubkey)).verify(mhash,sign)
+    print("Signature is Valid")
+except(ValueError,TypeError):
+    print("Signature is invalid")
