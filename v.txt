@@ -1,0 +1,26 @@
+import random
+import string
+def genkey(length):
+    k=''
+    for n in range(length):
+        k+=random.choice(string.ascii_letters+string.digits)
+    return k
+def vernam_encrypt(plaintext,key):
+    global cipher
+    cipher=''
+    for i in range(len(plaintext)):
+        cipher+=chr(ord(plaintext[i])^ord(key[i]))
+    return cipher
+def vernam_decrypt(ciphertext,key):
+    global plain
+    plain=''
+    for i in range(len(ciphertext)):
+        plain+=chr(ord(ciphertext[i])^ord(key[i]))
+    return plain
+
+plaintext=input('enter the plaintext msg')
+key=genkey(len(plaintext))
+print('key='+key)
+ciphertext=vernam_encrypt(plaintext,key)
+print('ciphertext=',ciphertext)
+print('plaintext=',vernam_decrypt(ciphertext,key))
