@@ -1,0 +1,25 @@
+#monoalphabeticcipher
+import random
+chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ'+'abcdefghijklmnopqrstuvwxyz'+'0123456789'+'~!@#$%^&*()_+{}:"?><'
+def generate_key():
+    shuffled=sorted(chars,key=lambda k:random.random())
+    return dict(zip(chars,shuffled))
+
+def encrypt(key,plaintext):
+    return''.join(key[a] for a in plaintext)
+
+def decrypt(key,cypertext):
+    flipped={v:k for k,v in key.items()}
+    return''.join(flipped[a] for a in cypertext)
+
+def show_result(plaintext):
+    key=generate_key()
+    encrypted=encrypt(key,plaintext)
+    decrypted=decrypt(key,encrypted)
+    print('key:%s'%key)
+    print('plaintext:'+plaintext)
+    print('encrypted:'+encrypted)
+    print('decrypted:'+decrypted)
+    
+plaintext=input('Enter the plaintext:')
+show_result(plaintext)
