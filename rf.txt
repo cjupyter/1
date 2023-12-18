@@ -61,6 +61,40 @@ main()
 
 #column
 
+
+=================
+
+
+import math
+
+def columnar_cipher(message, key, encrypt=True):
+
+    pad_len = len(key) - len(message) % len(key)
+    padded_message = message + '_' * pad_len
+
+    col = len(key)
+    row = int(math.ceil(len(padded_message) / col))
+    matrix = [padded_message[i:i+col] for i in range(0, len(padded_message), col)]
+    key_order = sorted(range(col), key=lambda k: key[k])
+
+    if encrypt:
+        result = ''.join(''.join(row[i] for i in key_order) for row in matrix)
+    else:
+        key_order = sorted(range(col), key=lambda k: key[k])
+        result = ''.join(matrix[i][key_order.index(j)] for i in range(row) for j in range(col))
+    return result
+
+# Example usage
+key = "HACK"
+message = "hello"
+
+encrypted = columnar_cipher(message, key)
+decrypted = columnar_cipher(encrypted, key, encrypt=False)
+
+print(f"Original Message: {message}")
+print(f"Encrypted: {encrypted}")
+print(f"Decrypted: {decrypted}")
+
              
 
 
